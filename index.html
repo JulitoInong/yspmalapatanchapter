@@ -732,25 +732,25 @@
                     <h2 class="mt-3 text-3xl font-black text-slate-950">Send us a message</h2>
                     <p class="mt-3 text-sm leading-7 text-slate-600">Share your details and we’ll respond to your volunteer request as soon as possible.</p>
                 </div>
-                <form id="volunteer-form" class="space-y-5" novalidate>
+                <form id="volunteer-form" class="space-y-5" action="https://api.sheetmonkey.io/form/8Epv5K5s8PAKyADUVAGPpr" method="POST">
                     <div>
                         <label class="text-sm font-semibold text-slate-900" for="volunteer-name">Your name</label>
-                        <input id="volunteer-name" name="name" type="text" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="Jane Doe">
+                        <input id="volunteer-name" name="Name" type="text" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="Jane Doe">
                         <p id="error-name" class="mt-2 text-sm text-rose-500 hidden"></p>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-slate-900" for="volunteer-email">Email address</label>
-                        <input id="volunteer-email" name="email" type="email" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="you@example.com">
+                        <input id="volunteer-email" name="Email" type="email" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="you@example.com">
                         <p id="error-email" class="mt-2 text-sm text-rose-500 hidden"></p>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-slate-900" for="volunteer-message">Message</label>
-                        <textarea id="volunteer-message" name="message" rows="4" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="Tell us how you’d like to contribute."></textarea>
+                        <textarea id="volunteer-message" name="Message" rows="4" required class="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-ysp-orange focus:ring-4 focus:ring-orange-100" placeholder="Tell us how you’d like to contribute."></textarea>
                         <p id="error-message" class="mt-2 text-sm text-rose-500 hidden"></p>
                     </div>
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <p id="form-feedback" class="text-sm font-semibold text-emerald-700"></p>
-                        <button type="submit" class="inline-flex items-center justify-center rounded-3xl bg-ysp-orange px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-ysp-yellow hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-orange-100">Send inquiry</button>
+                        <button id="volunteer-submit" type="submit" class="inline-flex items-center justify-center rounded-3xl bg-ysp-orange px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-ysp-yellow hover:text-slate-950 focus:outline-none focus:ring-4 focus:ring-orange-100 disabled:cursor-not-allowed disabled:opacity-60">Send inquiry</button>
                     </div>
                 </form>
             </div>
