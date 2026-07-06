@@ -153,17 +153,49 @@ function validateForm() {
     return valid;
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
     event.preventDefault();
     const feedback = document.getElementById('form-feedback');
+    const submitButton = document.getElementById('volunteer-submit');
 
     if (!validateForm()) {
         feedback.textContent = '';
         return;
     }
 
-    feedback.textContent = 'Thank you! Your inquiry has been drafted. Please use your email client to send it.';
-    volunteerForm.reset();
+    feedback.classList.remove('text-emerald-700');
+    feedback.classList.add('text-slate-500');
+    feedback.textContent = 'Sending your inquiry…';
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending…';
+    }
+
+    try {
+        const response = await fetch(volunteerForm.action, {
+            method: 'POST',
+            body: new FormData(volunteerForm),
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+            feedback.classList.remove('text-slate-500');
+            feedback.classList.add('text-emerald-700');
+            feedback.textContent = 'Thank you! Your inquiry has been sent.';
+            volunteerForm.reset();
+        } else {
+            throw new Error('Request failed');
+        }
+    } catch (error) {
+        feedback.classList.remove('text-emerald-700');
+        feedback.classList.add('text-rose-500');
+        feedback.textContent = 'Something went wrong. Please try again or email us directly.';
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send inquiry';
+        }
+    }
 }
 
 if (menuButton && mobileMenu && menuOpenIcon && menuCloseIcon) {
