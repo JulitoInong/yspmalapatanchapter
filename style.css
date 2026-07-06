@@ -1,7 +1,8 @@
 /*--------------------------------------------------------------
   Youth Service Philippines Malapatan — site stylesheet
-  Base resets + a "Liquid Glass" treatment for translucent
-  surfaces (header, cards, modal, panels) in light & dark mode.
+  Base resets + Modern Elevated UI system.
+  Brand palette: yellow (#F59E0B), orange (#EA580C), white, black.
+  All elevation, glow, and highlight effects use orange/yellow tones.
 --------------------------------------------------------------*/
 
 :root {
@@ -28,101 +29,108 @@ button, input, textarea, select {
     font: inherit;
 }
 
+/* Base interaction transitions */
 button, a, .button {
-    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-                box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
-                background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
-                color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 250ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 250ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                background-color 250ms ease,
+                color 250ms ease;
 }
 
 button:active, a:active, .button:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
+}
+
+/* Keyboard focus should always read as a soft orange ring, never blue */
+:focus-visible {
+    outline: 2px solid #F59E0B;
+    outline-offset: 2px;
 }
 
 /*--------------------------------------------------------------
-  Liquid Glass system
-  A reusable frosted-glass treatment: a translucent tinted
-  background, blur + saturation, a thin luminous edge, a soft
-  ambient shadow, and a faint diagonal sheen that catches the
-  light like glass. Applied to surfaces without touching their
-  layout, spacing, copy, or color palette.
+  Modern Elevated UI System
+  Crisp, solid surfaces with high-contrast borders and layered,
+  orange-tinted shadows for a premium, tactile feel — in both
+  light mode (white surfaces) and dark mode (near-black surfaces).
 --------------------------------------------------------------*/
 
 :root {
-    --lg-blur: 22px;
-    --lg-saturate: 170%;
+    --card-bg-light: #ffffff;
+    --card-border-light: rgba(234, 88, 12, 0.12);
+    --card-shadow-light: 0 4px 6px -1px rgba(234, 88, 12, 0.06), 0 2px 4px -1px rgba(234, 88, 12, 0.04);
+    --card-shadow-hover-light: 0 22px 30px -8px rgba(234, 88, 12, 0.22), 0 10px 14px -6px rgba(245, 158, 11, 0.16);
 
-    --lg-bg-light: rgba(255, 255, 255, 0.6);
-    --lg-border-light: rgba(255, 255, 255, 0.7);
-    --lg-sheen-light: linear-gradient(120deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 45%);
-    --lg-shadow-light: 0 24px 60px -24px rgba(15, 23, 42, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
-    --lg-bg-dark: rgba(15, 23, 42, 0.55);
-    --lg-border-dark: rgba(255, 255, 255, 0.09);
-    --lg-sheen-dark: linear-gradient(120deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 45%);
-    --lg-shadow-dark: 0 24px 60px -24px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    --card-bg-dark: #111111;
+    --card-border-dark: rgba(245, 158, 11, 0.18);
+    --card-shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(234, 88, 12, 0.06);
+    --card-shadow-hover-dark: 0 24px 32px -8px rgba(234, 88, 12, 0.3), 0 10px 16px -6px rgba(245, 158, 11, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.liquid-glass,
 .event-card,
 #officers article {
     position: relative;
-    isolation: isolate;
-    background-color: var(--lg-bg-light) !important;
-    border-color: var(--lg-border-light) !important;
-    -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
-    backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-saturate));
-    box-shadow: var(--lg-shadow-light);
-    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-                box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
-                background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.liquid-glass::before,
-.event-card::before,
-#officers article::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--lg-sheen-light);
-    pointer-events: none;
+    background-color: var(--card-bg-light) !important;
+    border: 1px solid var(--card-border-light) !important;
+    box-shadow: var(--card-shadow-light);
+    transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 350ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                border-color 350ms ease;
+    will-change: transform, box-shadow;
 }
 
 .event-card:hover,
 #officers article:hover {
-    transform: translateY(-2px);
-    background-color: rgba(255, 255, 255, 0.78) !important;
-    box-shadow: 0 28px 70px -24px rgba(15, 23, 42, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: translateY(-6px);
+    border-color: rgba(234, 88, 12, 0.4) !important;
+    box-shadow: var(--card-shadow-hover-light);
 }
 
-.event-card[hidden] { display: none; }
+.event-card[hidden] {
+    display: none;
+}
 
-/* Dark mode: same glass system, cooler tint, lower-contrast sheen */
-html.dark .liquid-glass,
+/* Dark mode overrides — black surfaces, warm glow on hover */
 html.dark .event-card,
 html.dark #officers article {
-    background-color: var(--lg-bg-dark) !important;
-    border-color: var(--lg-border-dark) !important;
-    box-shadow: var(--lg-shadow-dark);
-}
-
-html.dark .liquid-glass::before,
-html.dark .event-card::before,
-html.dark #officers article::before {
-    background: var(--lg-sheen-dark);
+    background-color: var(--card-bg-dark) !important;
+    border-color: var(--card-border-dark) !important;
+    box-shadow: var(--card-shadow-dark);
 }
 
 html.dark .event-card:hover,
 html.dark #officers article:hover {
-    background-color: rgba(15, 23, 42, 0.7) !important;
-    box-shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-6px);
+    border-color: rgba(251, 146, 60, 0.5) !important;
+    box-shadow: var(--card-shadow-hover-dark);
+}
+
+/* Signature gradient rule on every card's top edge */
+.event-card::before,
+#officers article::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, #F59E0B, #EA580C);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    border-radius: 1rem 1rem 0 0;
+    pointer-events: none;
+}
+
+.event-card:hover::before,
+#officers article:hover::before {
+    opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .liquid-glass,
     .event-card,
     #officers article {
         transition: none;
+    }
+
+    .event-card:hover,
+    #officers article:hover {
+        transform: none;
     }
 }
