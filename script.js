@@ -109,7 +109,7 @@ async function handleFormSubmit(event) {
         return;
     }
 
-    feedback.classList.remove('text-emerald-700');
+    feedback.classList.remove('text-slate-900');
     feedback.classList.add('text-slate-500');
     feedback.textContent = 'Sending your inquiry…';
     if (submitButton) {
@@ -126,14 +126,14 @@ async function handleFormSubmit(event) {
 
         if (response.ok) {
             feedback.classList.remove('text-slate-500');
-            feedback.classList.add('text-emerald-700');
+            feedback.classList.add('text-slate-900');
             feedback.textContent = 'Thank you! Your inquiry has been sent.';
             volunteerForm.reset();
         } else {
             throw new Error('Request failed');
         }
     } catch (error) {
-        feedback.classList.remove('text-emerald-700');
+        feedback.classList.remove('text-slate-900');
         feedback.classList.add('text-rose-500');
         feedback.textContent = 'Something went wrong. Please try again or email us directly.';
     } finally {
@@ -243,4 +243,131 @@ document.querySelectorAll('.reveal').forEach((item) => revealObserver.observe(it
 
 if (localStorage.getItem('ysp-dark-mode') === 'true') {
     setDarkMode(true);
+}
+// ================================================================
+// FEEDBACK PORTAL SYSTEM CONTROLLERS
+// ================================================================
+const openFeedbackBtn = document.getElementById('open-feedback-modal');
+const closeFeedbackBtn = document.getElementById('close-feedback-modal');
+const feedbackModal = document.getElementById('feedback-modal-overlay');
+const feedbackForm = document.getElementById('feedback-form');
+const feedbackAnonymousCheckbox = document.getElementById('feedback-anonymous');
+const emailFieldContainer = document.getElementById('email-field-container');
+const feedbackEmailInput = document.getElementById('feedback-email');
+
+// Open Portal
+if (openFeedbackBtn) {
+    openFeedbackBtn.addEventListener('click', () => {
+        feedbackModal.classList.remove('hidden');
+        feedbackModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+// Close Portal
+function closeFeedbackPortal() {
+    feedbackModal.classList.add('hidden');
+    feedbackModal.classList.remove('flex');
+    document.body.style.overflow = '';
+}
+
+if (closeFeedbackBtn) closeFeedbackBtn.addEventListener('click', closeFeedbackPortal);
+if (feedbackModal) {
+    feedbackModal.addEventListener('click', (e) => {
+        if (e.target === feedbackModal) closeFeedbackPortal();
+    });
+}
+
+// Handle Anonymous Checkbox State Updates
+if (feedbackAnonymousCheckbox) {
+    feedbackAnonymousCheckbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            // Hide and disable email requirement
+            emailFieldContainer.classList.add('hidden');
+            feedbackEmailInput.removeAttribute('required');
+            feedbackEmailInput.value = ''; // Reset values
+            const errorElement = document.getElementById('error-feedback-email');
+            if (errorElement) errorElement.classList.add('hidden');
+        } else {
+            // Restore visibility and requirement
+            emailFieldContainer.classList.remove('hidden');
+            feedbackEmailInput.setAttribute('required', 'true');
+        }
+    });
+}
+
+// Validation & Async Submission to Spreadsheet Database
+if (feedbackForm) {
+    feedbackForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const statusMsg = document.getElementById('feedback-portal-status');
+        const submitBtn = document.getElementById('feedback-submit');
+        const messageInput = document.getElementById('feedback-message');
+        let isValid = true;
+
+        // Message field check
+        if (!messageInput.value.trim()) {
+            document.getElementById('error-feedback-message').textContent = 'Please provide a message.';
+            document.getElementById('error-feedback-message').classList.remove('hidden');
+            isValid = false;
+        } else {
+            document.getElementById('error-feedback-message').classList.add('hidden');
+        }
+
+        // Email address check (only if not anonymous)
+        if (!feedbackAnonymousCheckbox.checked) {
+            const emailValue = feedbackEmailInput.value.trim();
+            if (!emailValue) {
+                document.getElementById('error-feedback-email').textContent = 'Please enter your email.';
+                document.getElementById('error-feedback-email').classList.remove('hidden');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                document.getElementById('error-feedback-email').textContent = 'Please enter a valid email.';
+                document.getElementById('error-feedback-email').classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById('error-feedback-email').classList.add('hidden');
+            }
+        }
+
+        if (!isValid) return;
+
+        // UI Feedback during API stream saving
+        statusMsg.className = "text-sm font-semibold text-slate-500";
+        statusMsg.textContent = 'Submitting feedback…';
+        submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData(feedbackForm);
+            // Explicitly set email to 'Anonymous' in sheets rows if toggled on
+            if (feedbackAnonymousCheckbox.checked) {
+                formData.set('Email', 'Anonymous');
+            }
+
+            const response = await fetch(feedbackForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                statusMsg.className = "text-sm font-semibold text-slate-900";
+                statusMsg.textContent = 'Thank you! Your feedback has been recorded.';
+                feedbackForm.reset();
+                // Reset anonymous toggle layout
+                emailFieldContainer.classList.remove('hidden');
+                feedbackEmailInput.setAttribute('required', 'true');
+                
+                setTimeout(() => { closeFeedbackPortal(); statusMsg.textContent = ''; }, 2000);
+            } else {
+                throw new Error();
+            }
+        } catch (error) {
+            statusMsg.className = "text-sm font-semibold text-rose-500";
+            statusMsg.textContent = 'Submission failed. Please try again later.';
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
 }
