@@ -11,35 +11,8 @@ const volunteerForm = document.getElementById('volunteer-form');
 const backToTop = document.getElementById('back-to-top');
 const currentYear = document.getElementById('current-year');
 
-const slideImage = document.getElementById('slide-image');
-const slideLabel = document.getElementById('slide-label');
-const slideDescription = document.getElementById('slide-description');
-const slidePrev = document.getElementById('slide-prev');
-const slideNext = document.getElementById('slide-next');
-const slideDots = document.getElementById('slide-dots');
 const eventsToggle = document.getElementById('events-toggle');
 const hiddenEventCards = document.querySelectorAll('#events-grid article[hidden]');
-
-const slides = [
-    {
-        src: 'assets/ysp-malapatan-cover.jpg',
-        label: 'Community service spotlight',
-        description: 'Celebrating the strength of youth leadership in local outreach and partnership events.'
-    },
-    {
-        src: 'assets/event-online-kamustahan.jpg',
-        label: 'Community connection',
-        description: 'A kamustahan event that strengthens relationships between youth volunteers and community members.'
-    },
-    {
-        src: 'assets/event-online-chapter-orientation.jpg',
-        label: 'Chapter orientation',
-        description: 'New members learn how Youth Service Philippines Malapatan serves the community and leads with purpose.'
-    }
-];
-
-let currentSlide = 0;
-let slideInterval = null;
 
 function setMenu(open) {
     mobileMenu.classList.toggle('hidden', !open);
@@ -47,33 +20,6 @@ function setMenu(open) {
     menuCloseIcon.classList.toggle('hidden', !open);
     menuButton.setAttribute('aria-expanded', String(open));
     menuButton.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
-}
-
-function updateSlide(index) {
-    currentSlide = (index + slides.length) % slides.length;
-    const slide = slides[currentSlide];
-
-    slideImage.classList.add('opacity-0');
-    setTimeout(() => {
-        slideImage.src = slide.src;
-        slideImage.alt = slide.label;
-        slideLabel.textContent = slide.label;
-        slideDescription.textContent = slide.description;
-        slideImage.classList.remove('opacity-0');
-    }, 200);
-
-    Array.from(slideDots.children).forEach((dot, dotIndex) => {
-        dot.classList.toggle('bg-white', dotIndex === currentSlide);
-        dot.classList.toggle('bg-white/40', dotIndex !== currentSlide);
-    });
-}
-
-function startSlideshow() {
-    slideInterval = setInterval(() => updateSlide(currentSlide + 1), 7000);
-}
-
-function stopSlideshow() {
-    clearInterval(slideInterval);
 }
 
 function setDarkMode(enabled) {
@@ -270,36 +216,6 @@ if (backToTop) {
 
 if (currentYear) {
     currentYear.textContent = new Date().getFullYear();
-}
-
-if (slidePrev && slideNext && slideDots && slideImage) {
-    slides.forEach((_, index) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'h-2.5 w-2.5 rounded-full bg-white/40 transition';
-        dot.setAttribute('aria-label', `Show slide ${index + 1}`);
-        dot.addEventListener('click', () => {
-            updateSlide(index);
-            stopSlideshow();
-            startSlideshow();
-        });
-        slideDots.appendChild(dot);
-    });
-
-    slidePrev.addEventListener('click', () => {
-        updateSlide(currentSlide - 1);
-        stopSlideshow();
-        startSlideshow();
-    });
-
-    slideNext.addEventListener('click', () => {
-        updateSlide(currentSlide + 1);
-        stopSlideshow();
-        startSlideshow();
-    });
-
-    updateSlide(0);
-    startSlideshow();
 }
 
 const sectionObserver = new IntersectionObserver((entries) => {
